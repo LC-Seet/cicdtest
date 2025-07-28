@@ -1,0 +1,8 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+
+images:
+  - name: REPLACEME
+    newName: image-registry.openshift-image-registry.svc:5000/dev/petclinic
+    newTag: latest

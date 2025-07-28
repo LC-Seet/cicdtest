@@ -1,0 +1,14 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: cicd-pipeline-binding
+spec:
+  params:
+    - name: git-url
+      value: $(body.repository.git_http_url)
+    - name: image
+      value: image-registry.openshift-image-registry.svc:5000/dev/petclinic:$(body.after)
+    - name: sonar-url
+      value: http://sonarqube-sonarqube.svc.cluster.local:9000
+    - name: sonar-token
+      value: $(extensions.sonarToken)

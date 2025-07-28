@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+namePrefix: uat-
+images:
+  - name: image-registry.openshift-image-registry.svc:5000/dev/petclinic
+    newName: image-registry.openshift-image-registry.svc:5000/uat/petclinic
+    newTag: latest

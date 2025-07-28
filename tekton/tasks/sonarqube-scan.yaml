@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: sonarqube-scan
+spec:
+  params:
+    - name: sonar-url
+      type: string
+      description: SonarQube server URL
+    - name: sonar-token
+      type: string
+      description: Token to authenticate with SonarQube
+  workspaces:
+    - name: source
+  steps:
+    - name: sonar-scan
+      image: registry.access.redhat.com/ubi8/openjdk-17
+      workingDir: $(workspaces.source.path)
+      env:
+        - name: SONAR_HOST_URL
+          value: $(params.sonar-url)
+        - name: SONAR_TOKEN
+          value: $(params.sonar-token)
+      script: |
+        mvn -B sonar:sonar \
+          -Dsonar.host.url=$SONAR_HOST_URL \
+          -Dsonar.login=$SONAR_TOKEN

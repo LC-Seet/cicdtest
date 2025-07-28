@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: maven-build
+spec:
+  workspaces:
+    - name: source
+    - name: maven-repo
+  steps:
+    - name: maven-package
+      image: registry.access.redhat.com/ubi8/openjdk-17
+      workingDir: $(workspaces.source.path)
+      script: |
+        mvn -B -Dmaven.repo.local=$(workspaces.maven-repo.path) package
+  results:
+    - name: image-tag
+      description: Generated image tag

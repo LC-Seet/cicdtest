@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: update-deployment
+spec:
+  params:
+    - name: image
+      type: string
+    - name: overlay-dir
+      type: string
+  workspaces:
+    - name: gitops
+  steps:
+    - name: update-image
+      image: registry.access.redhat.com/ubi8/ubi
+      workingDir: $(workspaces.gitops.path)
+      script: |
+        echo "Patching $(params.overlay-dir) to use $(params.image)"
+        cd $(params.overlay-dir)
+        # Replace the tag in kustomization.yaml (simple sed)
+        sed -i "s/newTag: .*/newTag: $(params.image)/" kustomization.yaml
+        git config --global user.name "Tekton CI"
+        git config --global user.email "tekton@example.com"
+        git add .
+        git commit -m "Update image tag to $(params.image)"
+        git push origin HEAD:main
